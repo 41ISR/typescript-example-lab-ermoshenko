@@ -1,372 +1,73 @@
-# Todo-приложение на React + TypeScript
+# React + TypeScript + Vite
 
-## 📋 Техническое задание
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-### Цель работы
+Currently, two official plugins are available:
 
-Самостоятельно реализовать Todo-приложение на **React + TypeScript**, применяя базовые возможности TypeScript и уже изученные React-хуки.
-Вам предоставлена **готовая верстка** — ваша задача разбить её на компоненты, типизировать данные и реализовать логику приложения.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
----
+## React Compiler
 
-## Общие требования
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-* Использовать **функциональные компоненты**
-* Использовать **TypeScript в строгом режиме**
-* Использовать только **React + TypeScript** (без сторонних библиотек)
-* Типизировать:
-  * состояние компонентов
-  * props
-  * обработчики событий
-* Типы и интерфейсы хранить **в тех же файлах**, где используются
+## Expanding the ESLint configuration
 
----
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Функциональные требования
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-### 1. Работа с задачами
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-Реализовать следующие возможности:
-
-* добавление новой задачи
-* удаление задачи
-* отметка задачи как выполненной / невыполненной
-
-📌 Каждая задача должна содержать:
-
-* текст
-* признак выполнения
-* уникальный идентификатор
-
-> Определите подходящую структуру данных для хранения задачи.
-
----
-
-### 2. Фильтрация задач
-
-Приложение должно поддерживать фильтрацию:
-
-* все задачи
-* только активные
-* только выполненные
-
-Фильтр должен:
-
-* храниться в состоянии
-* влиять на отображаемый список задач
-
-> Используйте union-тип для возможных значений фильтра.
-
----
-
-### 3. Счётчик задач
-
-Отображать количество **активных (невыполненных)** задач.
-
-> Определите, нужно ли хранить это значение в состоянии или вычислять на основе списка задач.
-
----
-
-### 4. Сохранение состояния
-
-Список задач должен:
-
-* сохраняться в `localStorage`
-* восстанавливаться при перезагрузке страницы
-
-Использовать:
-
-* `useEffect`
-* сериализацию / десериализацию данных
-
-[Дока по работе с localStorage](https://doka.guide/js/local-storage/)
-
-> Определите, в какой момент следует сохранять данные.
-
----
-
-## Архитектурные требования
-
-### Компоненты
-
-Верстка должна быть разбита минимум на:
-
-* корневой компонент приложения
-* компонент ввода новой задачи
-* компонент списка задач
-* компонент отдельной задачи
-* компонент фильтров и счётчика
-
-> Определите ответственность каждого компонента и какие данные он получает через props.
-
----
-
-### Работа с состоянием
-
-* Список задач хранится в компоненте верхнего уровня
-* Управление задачами (добавление, удаление, переключение) происходит через функции, передаваемые вниз
-* Инпут добавления задачи должен быть **controlled**
-
----
-
-## Типизация
-
-### Обязательные требования:
-
-* Типизировать:
-  * props компонентов
-  * состояние (`useState`)
-  * параметры функций
-  * события (`ChangeEvent`, `FormEvent`, и т.п.)
-* Использовать:
-  * `interface` или `type` для описания задачи
-  * union-типы для фильтра
-
-## 🧩 JSX-верстка (основа)
-
-```tsx
-    <div className="app-container">
-      <h1 className="app-title">📝 Мои задачи</h1>
-      
-      {/* Форма добавления задачи */}
-      <div className="todo-form">
-        <input
-          type="text"
-          className="todo-input"
-          placeholder="Введите новую задачу..."
-        />
-        <button type="button" className="btn btn-add">
-          Добавить
-        </button>
-      </div>
-      
-      {/* Кнопки фильтрации */}
-      <div className="filter-buttons">
-        <button className="btn btn-filter active">
-          Все
-        </button>
-        <button className="btn btn-filter">
-          Активные
-        </button>
-        <button className="btn btn-filter">
-          Завершённые
-        </button>
-      </div>
-      
-      {/* Список задач */}
-      <ul className="todo-list">
-        <li className="todo-item">
-          <input
-            type="checkbox"
-            className="todo-checkbox"
-          />
-          <span className="todo-text">
-            Изучить React Hooks
-          </span>
-          <button className="btn btn-delete">
-            Удалить
-          </button>
-        </li>
-        
-        <li className="todo-item">
-          <input
-            type="checkbox"
-            className="todo-checkbox"
-            checked
-            readOnly
-          />
-          <span className="todo-text completed">
-            Прочитать документацию
-          </span>
-          <button className="btn btn-delete">
-            Удалить
-          </button>
-        </li>
-        
-        <li className="todo-item">
-          <input
-            type="checkbox"
-            className="todo-checkbox"
-          />
-          <span className="todo-text">
-            Создать Todo-приложение
-          </span>
-          <button className="btn btn-delete">
-            Удалить
-          </button>
-        </li>
-      </ul>
-    </div>
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
----
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-# 🎨 style.css
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-```css
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-#root {
-  width: 100%;
-  max-width: 600px;
-}
-
-.app-container {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 30px;
-}
-
-.app-title {
-  text-align: center;
-  color: #667eea;
-  margin-bottom: 30px;
-  font-size: 2.5rem;
-}
-
-.todo-form {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
-}
-
-.todo-input {
-  flex: 1;
-  padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-.todo-input:focus {
-  outline: none;
-  border-color: #667eea;
-}
-
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-add {
-  background: #667eea;
-  color: white;
-}
-
-.btn-add:hover {
-  background: #5568d3;
-  transform: translateY(-2px);
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-}
-
-.btn-filter {
-  background: #f5f5f5;
-  color: #333;
-  padding: 8px 16px;
-  font-size: 14px;
-}
-
-.btn-filter:hover {
-  background: #e0e0e0;
-}
-
-.btn-filter.active {
-  background: #667eea;
-  color: white;
-}
-
-.todo-list {
-  list-style: none;
-}
-
-.todo-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  transition: all 0.3s;
-}
-
-.todo-item:hover {
-  background: #f0f0f0;
-  transform: translateX(5px);
-}
-
-.todo-checkbox {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.todo-text {
-  flex: 1;
-  font-size: 16px;
-  color: #333;
-}
-
-.todo-text.completed {
-  text-decoration: line-through;
-  color: #999;
-}
-
-.btn-delete {
-  background: #ff6b6b;
-  color: white;
-  padding: 8px 16px;
-  font-size: 14px;
-}
-
-.btn-delete:hover {
-  background: #ee5a52;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #999;
-  font-size: 18px;
-}
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-# Ресурсы
-
-- [TypeScript](https://doka.guide/tools/static-types/)
-
-# Как сдавать
-
-- Создайте форк репозитория в вашей организации с названием-этого-репозитория-вашафамилия
-- Используя ветку wip сделайте задание
-- Зафиксируйте изменения в вашем репозитории
-- Когда документ будет готов - создайте пул реквест из ветки wip (вашей) на ветку main (тоже вашу) и укажите меня (ktkv419) как reviewer
-
-Не мержите сами коммит, это сделаю я после проверки задания
