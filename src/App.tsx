@@ -19,40 +19,30 @@ function App() {
 
   const [filter, setFilter] = useState<Filter>('all');
 
-  // persist todos whenever they change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
     } catch {
-      // ignore write errors
+      // ignore
     }
   }, [todos]);
 
   const addTodo = (text: string) => {
-    const newTodo: Todo = {
-      id: crypto.randomUUID(),
-      text,
-      completed: false,
-    };
-    setTodos((prev) => [newTodo, ...prev]);
+    const newTodo: Todo = { id: crypto.randomUUID(), text, completed: false };
+    setTodos((p) => [newTodo, ...p]);
   };
 
   const deleteTodo = (id: string) => {
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    setTodos((p) => p.filter((t) => t.id !== id));
   };
 
   const toggleTodo = (id: string) => {
-    setTodos((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      )
+    setTodos((p) =>
+      p.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     );
   };
 
-  const activeCount = useMemo(
-    () => todos.filter((t) => !t.completed).length,
-    [todos]
-  );
+  const activeCount = useMemo(() => todos.filter((t) => !t.completed).length, [todos]);
 
   const filteredTodos = useMemo(() => {
     switch (filter) {
@@ -70,16 +60,8 @@ function App() {
       <h1 className="app-title">📝 Мои задачи</h1>
 
       <NewTodoForm onAdd={addTodo} />
-      <Filters
-        current={filter}
-        onChange={setFilter}
-        activeCount={activeCount}
-      />
-      <TodoList
-        todos={filteredTodos}
-        onToggle={toggleTodo}
-        onDelete={deleteTodo}
-      />
+      <Filters current={filter} onChange={setFilter} activeCount={activeCount} />
+      <TodoList todos={filteredTodos} onToggle={toggleTodo} onDelete={deleteTodo} />
     </div>
   );
 }
